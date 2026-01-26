@@ -1,0 +1,23 @@
+h2 {
+    color: blue;
+    font-size: 25px;
+}
+
+li {
+    color: red
+}
+.skills1{
+    color: cadetblue;
+}
+#skill_id{
+    font-size: 50px;
+}
+
+.int1{
+    border: 2px solid black;
+}
+
+.Parent{
+    border: 2px solid black;
+    margin-top: 10px;
+}
