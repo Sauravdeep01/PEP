@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Card</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gray-200">
+
+    <div class="w-[450px] bg-white rounded-3xl shadow-2xl p-6 flex gap-6 hover:scale-105 transition duration-300">
+
+        <div class="relative">
+            <img src="saurav pic.jpg"
+                class="w-[120px] h-[140px] object-cover rounded-2xl border-3 border-indigo-500 shadow-lg">
+            <span
+                class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-xs px-3 py-1 rounded-full shadow">
+                VERIFIED
+            </span>
+        </div>
+
+        <!-- Details -->
+        <div class="flex flex-col justify-center">
+            <h1 class="text-2xl font-bold text-gray-800">Saurav Deep</h1>
+            <p class="text-indigo-600 font-semibold">Full Stack Developer</p>
+
+            <div class="mt-3 text-gray-600 space-y-1 text-sm">
+                <p><span class="font-semibold text-gray-700">DOB:</span> 19 Feb 2006</p>
+                <p><span class="font-semibold text-gray-700">Mobile:</span> 8789095893</p>
+                <p><span class="font-semibold text-gray-700">Email:</span> sauravdeep.dev@gmail.com</p>
+                <p><span class="font-semibold text-gray-700">Location:</span> India 🇮🇳</p>
+            </div>
+
+            <button
+                class="mt-4 bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition shadow-md">
+                View Profile
+            </button>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
