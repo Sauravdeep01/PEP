@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Complaint Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div id="toast" class="toast"></div>
+
+    <nav class="navbar">
+        <div class="container1">
+            <div class="logo">
+                <h1>Complaint Tracker</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">User Portal</a>
+                <a href="admin.html" class="nav-link">Admin Panel</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container2">
+        <div id="userView" class="view">
+            <header class="hero-section">
+                <h1>Welcome to Complaint Tracker</h1>
+                <p>Fill out the form below to submit your complaint. You will receive a tracking ID.</p>
+            </header>
+
+            <section id="form-section" class="card">
+                <h2>Submit New Complaint</h2>
+                <form id="complaintForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" placeholder="Brief summary of your complaint" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" rows="4"
+                            placeholder="Provide detailed information about your complaint" required></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn">Submit Now</button>
+                </form>
+            </section>
+
+            <section id="list-section" class="complaints-section">
+                <div class="section-header">
+                    <h2>Your Complaints</h2>
+                </div>
+
+                <div id="complaintsList">
+                    <!-- Complaints will be loaded here -->
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

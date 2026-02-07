@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Complaint Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="admin-body">
+    <nav class="navbar">
+        <div class="container1">
+            <div class="logo">
+                <h1>Complaint Tracker</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">User Portal</a>
+                <a href="admin.html" class="nav-link active">Admin Panel</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="admin-container">
+        <header class="admin-header">
+            <h2>Admin Dashboard</h2>
+        </header>
+
+        <!-- Stats Section -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <p>Total Complaints</p>
+                <h3 id="totalCount">0</h3>
+            </div>
+            <div class="stat-card pending">
+                <p>Pending</p>
+                <h3 id="pendingCount">0</h3>
+            </div>
+            <div class="stat-card resolved">
+                <p>Resolved</p>
+                <h3 id="resolvedCount">0</h3>
+            </div>
+            <div class="stat-card rejected">
+                <p>Rejected</p>
+                <h3 id="rejectedCount">0</h3>
+            </div>
+        </div>
+
+        <!-- Filter and Search Section -->
+        <div class="card filter-section">
+            <div class="search-box">
+                <input type="text" id="adminSearch" placeholder="Search by ID, name, or subject...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="pending">Pending</button>
+                <button class="filter-btn" data-filter="resolved">Resolved</button>
+                <button class="filter-btn" data-filter="rejected">Rejected</button>
+            </div>
+        </div>
+
+        <!-- Admin Complaints List -->
+        <div id="adminComplaintsList" class="admin-list">
+            <!-- Admin complaints list will be loaded here -->
+        </div>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
