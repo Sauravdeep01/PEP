@@ -11,7 +11,6 @@ app.use((req, res, next) => {
 });
 
 
-
 let complaints = [];
 let nextId = 1;
 
@@ -87,9 +86,12 @@ app.delete('/complaints/:id', (req, res) => {
 
 
 
-app.listen(3000, () => {
-    console.log("Server running at port 3000");
-})
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running at port ${PORT}`);
+});
+
+export default app;
 
 
 
