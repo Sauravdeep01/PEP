@@ -1,12 +1,15 @@
 import express from "express";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 import User from "./schema.js";
+
+dotenv.config();
 
 const app = express();
 
 app.use(express.json());
 
-mongoose.connect("mongodb+srv://saurav_01:0003%40Saurav@mycluster.tp8ebka.mongodb.net/Users")
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB is connected"))
   .catch((err) => console.log(err));
 
