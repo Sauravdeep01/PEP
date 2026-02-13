@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const app = express();
 
-mongoose.connect("mongodb+srv://saurav_01:0003%40Saurav@mycluster.tp8ebka.mongodb.net/shopDB")
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("DB Connected"));
 
 const productSchema = new mongoose.Schema({
@@ -31,6 +31,6 @@ app.get("/products", async (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Server running at http://localhost:3000");
+app.listen(process.env.PORT, () => {
+  console.log(`Server running at port ${process.env.PORT}`);
 });
