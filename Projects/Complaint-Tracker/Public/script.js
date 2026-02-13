@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if we are on the Admin page or User page
+
     const isAdminPage = window.location.pathname.includes('admin.html');
 
-    // --- Helper Function for Popups (Toast) ---
     function showToast(message, type) {
         const toast = document.getElementById('toast');
         if (!toast) return;
@@ -12,9 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
-    // ==========================================
-    // USER PORTAL LOGIC (index.html)
-    // ==========================================
+    // User Portal
     if (!isAdminPage) {
         const complaintForm = document.getElementById('complaintForm');
 
@@ -47,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+
         async function fetchUserComplaints() {
             const list = document.getElementById('complaintsList');
             if (!list) return;
@@ -55,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch('/complaints');
                 const complaints = await res.json();
 
-                // Clear existing content safely
                 list.replaceChildren();
 
                 if (complaints.length === 0) {
@@ -65,12 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Append cards using real DOM elements
                 complaints.reverse().forEach(item => {
                     const card = document.createElement('div');
-                    card.className = 'complaint-card admin-card'; // Reuse admin-card for consistent look
+                    card.className = 'complaint-card admin-card'; 
 
-                    // Top: ID and Badge (Match admin style)
                     const topBar = document.createElement('div');
                     topBar.className = 'card-top';
 
@@ -148,9 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchUserComplaints();
     }
 
-    // ==========================================
-    // ADMIN PANEL LOGIC (admin.html)
-    // ==========================================
+
+
+    // ADMIN PANEL (admin.html)
     if (isAdminPage) {
         let allComplaints = [];
 
@@ -207,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.createElement('div');
                 card.className = 'complaint-card admin-card';
 
-                // Top: ID and Badge
+
                 const topBar = document.createElement('div');
                 topBar.className = 'card-top';
 
