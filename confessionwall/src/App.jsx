@@ -4,8 +4,9 @@ import ConfessionWall from './components/ConfessionWall';
 import Widgets from './components/Widgets';
 import UserProfile from './components/UserProfile';
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from './config';
 
-const API_URL = 'http://127.0.0.1:5001/confessions';
+const API_URL = `${API_BASE_URL}/confessions`;
 
 function App() {
   const { user, isLoaded, signIn, signOut, renderGoogleButton, manualAuth } = useAuth();
@@ -16,8 +17,8 @@ function App() {
   const [showNotifications, setShowNotifications] = useState(false);
   const [anonymousName, setAnonymousName] = useState('');
 
-  // Manual Login Form State
   const [showManualForm, setShowManualForm] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);
   const [manualEmail, setManualEmail] = useState('');
   const [manualUsername, setManualUsername] = useState('');
   const [manualError, setManualError] = useState('');
@@ -31,7 +32,7 @@ function App() {
       return;
     }
     setIsAuthenticating(true);
-    const result = await manualAuth(manualEmail, manualUsername);
+    const result = await manualAuth(manualEmail, manualUsername, isSignup ? 'signup' : 'login');
     if (!result.success) {
       setManualError(result.error);
     }
@@ -41,7 +42,7 @@ function App() {
   const fetchUserAnonName = async () => {
     if (!user) return;
     try {
-      const res = await fetch(`http://127.0.0.1:5001/users/${user.id}`);
+      const res = await fetch(`${API_BASE_URL}/users/${user.id}`);
       if (!res.ok) return;
       const data = await res.json();
       setAnonymousName(data.anonymousName || '');
@@ -91,7 +92,7 @@ function App() {
   const syncUserWithDB = async () => {
     if (!user || user.authType === 'manual') return; // Don't sync manual users via this route
     try {
-      await fetch(`http://127.0.0.1:5001/users/sync`, {
+      await fetch(`${API_BASE_URL}/users/sync`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -269,16 +270,19 @@ function App() {
                     <span>or use your account</span>
                   </div>
 
-                  <button className="email-login-btn" onClick={() => setShowManualForm(true)}>
+                  <button className="email-login-btn" onClick={() => { setShowManualForm(true); setIsSignup(false); }}>
                     Continue with Email &amp; Username
                   </button>
 
                   <div className="signup-prompt">
-                    <p>Don't have an account? <span className="signup-link" onClick={() => setShowManualForm(true)}>Sign Up</span></p>
+                    <p>Don't have an account? <span className="signup-link" onClick={() => { setShowManualForm(true); setIsSignup(true); }}>Sign Up</span></p>
                   </div>
                 </>
               ) : (
                 <form onSubmit={handleManualSubmit} className="manual-login-form">
+                  <h3 style={{ color: '#fff', marginBottom: '1rem', textAlign: 'center' }}>
+                    {isSignup ? 'Create an Account' : 'Welcome Back'}
+                  </h3>
                   <div className="form-field">
                     <input
                       type="email"
@@ -301,8 +305,15 @@ function App() {
                   </div>
                   {manualError && <p className="login-error-msg">{manualError}</p>}
                   <button type="submit" className="login-submit-btn" disabled={isAuthenticating}>
-                    {isAuthenticating ? 'Connecting...' : 'Continue'}
+                    {isAuthenticating ? 'Connecting...' : (isSignup ? 'Sign Up' : 'Login')}
                   </button>
+                  <div className="signup-prompt" style={{ marginTop: '1rem' }}>
+                    {isSignup ? (
+                      <p>Already have an account? <span className="signup-link" onClick={() => setIsSignup(false)}>Login</span></p>
+                    ) : (
+                      <p>Don't have an account? <span className="signup-link" onClick={() => setIsSignup(true)}>Sign Up</span></p>
+                    )}
+                  </div>
                   <button type="button" className="login-back-btn" onClick={() => setShowManualForm(false)}>
                     Back to Google Sign-In
                   </button>

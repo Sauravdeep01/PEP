@@ -7,6 +7,12 @@ import cors from 'cors';
 import confessionRoutes from './routes/confessions.js';
 import userRoutes from './routes/users.js';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const PORT = process.env.PORT || 5001;
 
@@ -18,9 +24,18 @@ app.use(express.json());
 app.use('/confessions', confessionRoutes);
 app.use('/users', userRoutes);
 
-// Health check
-app.get('/', (req, res) => {
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../dist')));
+
+// API Health check (optional, but good to keep under an /api prefix or similar if needed)
+app.get('/health', (req, res) => {
     res.json({ message: 'Confession Wall API is running' });
+});
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 // Connect to MongoDB and start server

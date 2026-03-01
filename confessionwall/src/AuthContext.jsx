@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { API_BASE_URL } from './config';
 
 /* ---------------------------------------------------------------
    AuthContext – wraps Google OAuth 2.0 (GSI / google accounts)
@@ -64,12 +65,12 @@ export function AuthProvider({ children, clientId }) {
     /* ----------------------------------------------------------
        Manual Login / Signup
     ---------------------------------------------------------- */
-    const manualAuth = useCallback(async (email, username) => {
+    const manualAuth = useCallback(async (email, username, action = 'login') => {
         try {
-            const res = await fetch(`http://127.0.0.1:5001/users/manual-auth`, {
+            const res = await fetch(`${API_BASE_URL}/users/manual-auth`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, username })
+                body: JSON.stringify({ email, username, action })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);

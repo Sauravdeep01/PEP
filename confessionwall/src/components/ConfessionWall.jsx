@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import './ConfessionWall.css';
+import { API_BASE_URL } from '../config';
 
-const API_URL = 'http://127.0.0.1:5001/confessions';
+const API_URL = `${API_BASE_URL}/confessions`;
 
 function ConfessionWall({ confessions, refreshData, currentAnonName }) {
     const { user, isLoaded } = useAuth();

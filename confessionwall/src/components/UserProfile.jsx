@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import './UserProfile.css';
+import { API_BASE_URL } from '../config';
 
-const API_URL = 'http://127.0.0.1:5001/confessions';
+const API_URL = `${API_BASE_URL}/confessions`;
 
 function UserProfile({ confessions, onNameUpdate }) {
     const { user, isLoaded } = useAuth();
@@ -21,7 +22,7 @@ function UserProfile({ confessions, onNameUpdate }) {
 
     const fetchAnonymousName = async () => {
         try {
-            const res = await fetch(`http://127.0.0.1:5001/users/${user.id}`);
+            const res = await fetch(`${API_BASE_URL}/users/${user.id}`);
             const data = await res.json();
             setAnonymousName(data.anonymousName || '');
             setNewName(data.anonymousName || '');
@@ -34,7 +35,7 @@ function UserProfile({ confessions, onNameUpdate }) {
     const handleUpdateName = async () => {
         setIsSaving(true);
         try {
-            const res = await fetch(`http://127.0.0.1:5001/users/update`, {
+            const res = await fetch(`${API_BASE_URL}/users/update`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ googleId: user.id, anonymousName: newName })

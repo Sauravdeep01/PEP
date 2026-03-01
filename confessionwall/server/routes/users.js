@@ -73,7 +73,7 @@ router.post('/update', async (req, res) => {
 // POST /users/manual-auth — Manual Login/Signup
 router.post('/manual-auth', async (req, res) => {
     try {
-        const { email, username } = req.body;
+        const { email, username, action } = req.body;
         if (!email || !username) {
             return res.status(400).json({ error: 'Email and Username are required' });
         }
@@ -81,7 +81,10 @@ router.post('/manual-auth', async (req, res) => {
         // Check if user exists by email
         let user = await User.findOne({ email });
 
-        if (!user) {
+        if (action === 'signup') {
+            if (user) {
+                return res.status(400).json({ error: 'User already exists with this email. Please log in.' });
+            }
             // Create NEW user
             const randomID = Math.floor(1000 + Math.random() * 9000);
             user = new User({
@@ -91,6 +94,14 @@ router.post('/manual-auth', async (req, res) => {
                 anonymousName: `User_${randomID}`
             });
             await user.save();
+        } else {
+            // Default to login action
+            if (!user) {
+                return res.status(400).json({ error: 'User not found. Please sign up first.' });
+            }
+            if (user.username !== username) {
+                return res.status(400).json({ error: 'Invalid username for this email.' });
+            }
         }
 
         res.json(user);
