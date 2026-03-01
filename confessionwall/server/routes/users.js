@@ -126,8 +126,14 @@ router.post('/manual-auth', async (req, res) => {
                 return res.status(400).json({ error: 'No account found. Please sign up first.' });
             }
 
+            // Google-only account
+            if (user.googleId && !user.password) {
+                return res.status(400).json({ error: 'This account uses Google Sign-In. Please use the Google button to log in.' });
+            }
+
+            // Legacy manual account (created before password support)
             if (!user.password) {
-                return res.status(400).json({ error: 'This account uses Google Sign-In. Please use Google to log in.' });
+                return res.status(400).json({ error: 'Your old account has no password. Please sign up again to create a new account with a password.' });
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
