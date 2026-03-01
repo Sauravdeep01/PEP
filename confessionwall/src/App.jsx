@@ -21,18 +21,26 @@ function App() {
   const [isSignup, setIsSignup] = useState(false);
   const [manualEmail, setManualEmail] = useState('');
   const [manualUsername, setManualUsername] = useState('');
+  const [manualPassword, setManualPassword] = useState('');
   const [manualError, setManualError] = useState('');
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  const resetForm = () => {
+    setManualEmail(''); setManualUsername(''); setManualPassword(''); setManualError('');
+  };
 
   const handleManualSubmit = async (e) => {
     e.preventDefault();
     setManualError('');
-    if (!manualEmail || !manualUsername) {
-      setManualError('Both fields are required.');
-      return;
+    if (!manualPassword) { setManualError('Password is required.'); return; }
+    if (isSignup && (!manualEmail || !manualUsername)) {
+      setManualError('All fields are required.'); return;
+    }
+    if (!isSignup && !manualEmail) {
+      setManualError('Email or Username is required.'); return;
     }
     setIsAuthenticating(true);
-    const result = await manualAuth(manualEmail, manualUsername, isSignup ? 'signup' : 'login');
+    const result = await manualAuth(manualEmail, manualUsername, manualPassword, isSignup ? 'signup' : 'login');
     if (!result.success) {
       setManualError(result.error);
     }
@@ -270,58 +278,80 @@ function App() {
                     <span>or use your account</span>
                   </div>
 
-                  <button className="email-login-btn" onClick={() => { setShowManualForm(true); setIsSignup(false); }}>
-                    Continue with Email &amp; Username
+                  <button className="email-login-btn" onClick={() => { setShowManualForm(true); setIsSignup(false); resetForm(); }}>
+                    Login with Email / Username
                   </button>
 
                   <div className="signup-prompt">
-                    <p>Don't have an account? <span className="signup-link" onClick={() => { setShowManualForm(true); setIsSignup(true); }}>Sign Up</span></p>
+                    <p>Don't have an account? <span className="signup-link" onClick={() => { setShowManualForm(true); setIsSignup(true); resetForm(); }}>Sign Up</span></p>
                   </div>
                 </>
               ) : (
                 <form onSubmit={handleManualSubmit} className="manual-login-form">
                   <h3 style={{ color: '#fff', marginBottom: '1rem', textAlign: 'center' }}>
-                    {isSignup ? 'Create an Account' : 'Welcome Back'}
+                    {isSignup ? '✨ Create an Account' : '👋 Welcome Back'}
                   </h3>
-                  <div className="form-field">
-                    <input
-                      type="email"
-                      placeholder="Email Address"
-                      className="login-input"
-                      value={manualEmail}
-                      onChange={(e) => setManualEmail(e.target.value)}
-                      required
-                    />
-                  </div>
+
+                  {/* Email field — always shown */}
                   <div className="form-field">
                     <input
                       type="text"
-                      placeholder="Username"
+                      placeholder={isSignup ? 'Email Address' : 'Email or Username'}
                       className="login-input"
-                      value={manualUsername}
-                      onChange={(e) => setManualUsername(e.target.value)}
-                      required
+                      value={manualEmail}
+                      onChange={(e) => setManualEmail(e.target.value)}
+                      required={isSignup}
+                      autoComplete="username"
                     />
                   </div>
+
+                  {/* Username — signup only */}
+                  {isSignup && (
+                    <div className="form-field">
+                      <input
+                        type="text"
+                        placeholder="Username"
+                        className="login-input"
+                        value={manualUsername}
+                        onChange={(e) => setManualUsername(e.target.value)}
+                        required
+                        autoComplete="nickname"
+                      />
+                    </div>
+                  )}
+
+                  {/* Password — always shown */}
+                  <div className="form-field">
+                    <input
+                      type="password"
+                      placeholder="Password"
+                      className="login-input"
+                      value={manualPassword}
+                      onChange={(e) => setManualPassword(e.target.value)}
+                      required
+                      autoComplete={isSignup ? 'new-password' : 'current-password'}
+                    />
+                  </div>
+
                   {manualError && <p className="login-error-msg">{manualError}</p>}
                   <button type="submit" className="login-submit-btn" disabled={isAuthenticating}>
-                    {isAuthenticating ? 'Connecting...' : (isSignup ? 'Sign Up' : 'Login')}
+                    {isAuthenticating ? 'Please wait...' : (isSignup ? 'Create Account' : 'Login')}
                   </button>
                   <div className="signup-prompt" style={{ marginTop: '1rem' }}>
                     {isSignup ? (
-                      <p>Already have an account? <span className="signup-link" onClick={() => setIsSignup(false)}>Login</span></p>
+                      <p>Already have an account? <span className="signup-link" onClick={() => { setIsSignup(false); resetForm(); }}>Login</span></p>
                     ) : (
-                      <p>Don't have an account? <span className="signup-link" onClick={() => setIsSignup(true)}>Sign Up</span></p>
+                      <p>Don't have an account? <span className="signup-link" onClick={() => { setIsSignup(true); resetForm(); }}>Sign Up</span></p>
                     )}
                   </div>
-                  <button type="button" className="login-back-btn" onClick={() => setShowManualForm(false)}>
+                  <button type="button" className="login-back-btn" onClick={() => { setShowManualForm(false); resetForm(); }}>
                     Back to Google Sign-In
                   </button>
                 </form>
               )}
             </div>
 
-            <p className="login-footer-note">Email ID and Username are compulsory for secure access.</p>
+            <p className="login-footer-note">Your data is secure. Password is encrypted.</p>
           </div>
         </div>
       )}

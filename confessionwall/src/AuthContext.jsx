@@ -65,18 +65,18 @@ export function AuthProvider({ children, clientId }) {
     /* ----------------------------------------------------------
        Manual Login / Signup
     ---------------------------------------------------------- */
-    const manualAuth = useCallback(async (email, username, action = 'login') => {
+    const manualAuth = useCallback(async (email, username, password, action = 'login') => {
         try {
             const res = await fetch(`${API_BASE_URL}/users/manual-auth`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, username, action })
+                body: JSON.stringify({ email, username, password, action })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
 
             const userObj = {
-                id: data.googleId || data.customUserId, // Use custom ID if no google ID
+                id: data.googleId || data.customUserId,
                 name: data.username,
                 firstName: data.username.split(' ')[0],
                 email: data.email,

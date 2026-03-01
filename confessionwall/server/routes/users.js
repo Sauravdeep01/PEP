@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 
 const router = express.Router();
@@ -70,41 +71,73 @@ router.post('/update', async (req, res) => {
     }
 });
 
-// POST /users/manual-auth — Manual Login/Signup
+// POST /users/manual-auth — Manual Login/Signup with password
 router.post('/manual-auth', async (req, res) => {
     try {
-        const { email, username, action } = req.body;
-        if (!email || !username) {
-            return res.status(400).json({ error: 'Email and Username are required' });
+        const { email, username, password, action } = req.body;
+
+        if (!password) {
+            return res.status(400).json({ error: 'Password is required' });
         }
 
-        // Check if user exists by email
-        let user = await User.findOne({ email });
-
         if (action === 'signup') {
-            if (user) {
-                return res.status(400).json({ error: 'User already exists with this email. Please log in.' });
+            // --- SIGN UP ---
+            if (!email || !username) {
+                return res.status(400).json({ error: 'Email, username and password are required' });
             }
-            // Create NEW user
+
+            const existingByEmail = await User.findOne({ email });
+            if (existingByEmail) {
+                return res.status(400).json({ error: 'An account with this email already exists. Please log in.' });
+            }
+
+            const existingByUsername = await User.findOne({ username });
+            if (existingByUsername) {
+                return res.status(400).json({ error: 'Username already taken. Please choose another.' });
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
             const randomID = Math.floor(1000 + Math.random() * 9000);
-            user = new User({
+
+            const user = new User({
                 email,
                 username,
+                password: hashedPassword,
                 customUserId: `USER_${randomID}`,
                 anonymousName: `User_${randomID}`
             });
             await user.save();
+
+            res.json(user);
+
         } else {
-            // Default to login action
+            // --- LOGIN ---
+            // Accept email OR username as identifier
+            const identifier = email || username;
+            if (!identifier) {
+                return res.status(400).json({ error: 'Email/Username and password are required' });
+            }
+
+            const user = await User.findOne({
+                $or: [{ email: identifier }, { username: identifier }]
+            });
+
             if (!user) {
-                return res.status(400).json({ error: 'User not found. Please sign up first.' });
+                return res.status(400).json({ error: 'No account found. Please sign up first.' });
             }
-            if (user.username !== username) {
-                return res.status(400).json({ error: 'Invalid username for this email.' });
+
+            if (!user.password) {
+                return res.status(400).json({ error: 'This account uses Google Sign-In. Please use Google to log in.' });
             }
+
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ error: 'Incorrect password. Please try again.' });
+            }
+
+            res.json(user);
         }
 
-        res.json(user);
     } catch (err) {
         console.error('Manual auth error:', err);
         res.status(500).json({ error: err.message });
